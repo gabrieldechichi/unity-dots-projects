@@ -1,26 +1,47 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
+
 
 public partial class SpawnerSystem : SystemBase
 {
     protected override void OnUpdate()
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
+
+        var seed = (((uint) Time.ElapsedTime) + 1234) * 3;
+        var rnd = new Random(seed);
         
         Entities
             .ForEach((Entity entity, in Spawner spawner) =>
         {
             ecb.DestroyEntity(entity);
-            for (int i = 0; i < spawner.LaneCount; i++)
+            for (var i = 0; i < spawner.LaneCount; i++)
             {
-                var instance = ecb.Instantiate(spawner.LanePrefab);
-                var translation = new Translation
+                var laneInstance = ecb.Instantiate(spawner.LanePrefab);
+                var laneTranslation = new Translation
                 {
                     Value = new float3(0, 0, i)
                 };
-                ecb.SetComponent(instance, translation);
+                ecb.SetComponent(laneInstance, laneTranslation);
+
+                for (int j = 0; j < 100; j++)
+                {
+                    if (rnd.NextInt() > spawner.CarFrequency)
+                    {
+                        var carInstance = ecb.Instantiate(spawner.CarPrefab);
+                        ecb.SetComponent(carInstance, laneTranslation);
+
+                        var carMovement = new CarMovement() {Offset = j};
+                        ecb.SetComponent(carInstance, carMovement);
+
+                        var urpColor = new URPMaterialPropertyBaseColor() {Value = rnd.NextFloat4()};
+                        ecb.SetComponent(carInstance, urpColor);
+                    }
+                    
+                }
             }
         })
             //Using Run here forces the job to run on the main thread. And no job scheduling takes place

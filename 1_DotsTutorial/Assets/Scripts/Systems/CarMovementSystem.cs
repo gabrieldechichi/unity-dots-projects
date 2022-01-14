@@ -10,10 +10,9 @@ public partial class CarMovementSystem : SystemBase
     {
         var time = Time.ElapsedTime;
         Entities
-            .WithAll<CarMovement>()
-            .ForEach((ref Translation translation) =>
+            .ForEach((ref Translation translation, in CarMovement carMovement) =>
         {
-            translation.Value.x = (float) time;
+            translation.Value.x = (float) ((time + carMovement.Offset) % 100) - 50.0f;
         }).ScheduleParallel();
     }
 }
