@@ -134,9 +134,9 @@ GameObject:
   - component: {fileID: 1250712737}
   - component: {fileID: 1250712736}
   - component: {fileID: 1250712735}
-  - component: {fileID: 1250712734}
   - component: {fileID: 1250712733}
   - component: {fileID: 1250712738}
+  - component: {fileID: 1250712734}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -284,6 +284,11 @@ MonoBehaviour:
   LaneCount: 1000
   CarPrefab: {fileID: 3119583347621317958, guid: 4442042c924ea4201b2b0751101b0996, type: 3}
   CarFrequency: 0.666
+  CarColors:
+  - {r: 0.7830189, g: 0.13665895, b: 0.13665895, a: 0}
+  - {r: 0.13725491, g: 0.78431374, b: 0.27850655, a: 0}
+  - {r: 0, g: 0.36430502, b: 1, a: 0}
+  - {r: 0.9283198, g: 1, b: 0, a: 0}
 --- !u!4 &1397907322
 Transform:
   m_ObjectHideFlags: 0

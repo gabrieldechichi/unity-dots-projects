@@ -15,7 +15,7 @@ public partial class SpawnerSystem : SystemBase
         var rnd = new Random(seed);
         
         Entities
-            .ForEach((Entity entity, in Spawner spawner) =>
+            .ForEach((Entity entity, in Spawner spawner, in DynamicBuffer<CarColor> carColors) =>
         {
             ecb.DestroyEntity(entity);
             for (var i = 0; i < spawner.LaneCount; i++)
@@ -27,7 +27,7 @@ public partial class SpawnerSystem : SystemBase
                 };
                 ecb.SetComponent(laneInstance, laneTranslation);
 
-                for (int j = 0; j < 100; j++)
+                for (var j = 0; j < 100; j++)
                 {
                     if (rnd.NextInt() > spawner.CarFrequency)
                     {
@@ -37,7 +37,11 @@ public partial class SpawnerSystem : SystemBase
                         var carMovement = new CarMovement() {Offset = j};
                         ecb.SetComponent(carInstance, carMovement);
 
-                        var urpColor = new URPMaterialPropertyBaseColor() {Value = rnd.NextFloat4()};
+                        var color = carColors.Length > 0
+                            ? (float3) carColors[rnd.NextInt(0, carColors.Length)]
+                            : float3.zero;
+                        
+                        var urpColor = new URPMaterialPropertyBaseColor() {Value = new float4(color.xyz, 1)};
                         ecb.SetComponent(carInstance, urpColor);
                     }
                     
